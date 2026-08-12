@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Remboursements{% endblock %}
+{% block content %}
+<section>
+    <div class="section-header">
+        <div>
+            <h1>Remboursements</h1>
+            <p class="lead">Remboursements émis et reçus.</p>
+        </div>
+        <a class="btn" href="{% url 'paiements:remboursement-create' %}">Nouveau remboursement</a>
+    </div>
+    {% if remboursements %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Paiement</th>
+                <th>Montant</th>
+                <th>Statut</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in remboursements %}
+            <tr>
+                <td><a href="{% url 'paiements:remboursement-detail' r.pk %}">{{ r.reference }}</a></td>
+                <td>{{ r.paiement.reference }}</td>
+                <td>{{ r.montant }} {{ r.devise }}</td>
+                <td>{{ r.get_statut_display }}</td>
+                <td>{{ r.date_creation }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Aucun remboursement.</p>
+    {% endif %}
+</section>
+{% endblock %}

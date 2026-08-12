@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Admin — Utilisateurs{% endblock %}
+{% block content %}
+<section>
+    <p class="breadcrumb"><a href="{% url 'administration:index' %}">Administration</a> / Utilisateurs</p>
+    <h1>Utilisateurs</h1>
+    <form method="get" class="filter-form">
+        <label>Recherche <input type="text" name="q" value="{{ filtre_q }}"></label>
+        <label>État
+            <select name="est_actif">
+                <option value="">Tous</option>
+                <option value="1" {% if filtre_est_actif == '1' %}selected{% endif %}>Actif</option>
+                <option value="0" {% if filtre_est_actif == '0' %}selected{% endif %}>Inactif</option>
+            </select>
+        </label>
+        <button type="submit">Filtrer</button>
+    </form>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th><th>Nom</th><th>E-mail</th><th>Username</th><th>État</th><th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in utilisateurs %}
+            <tr>
+                <td>{{ u.pk }}</td>
+                <td>{{ u.prenom }} {{ u.nom }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.user.username }}</td>
+                <td>{% if u.est_actif %}Actif{% else %}Inactif{% endif %}</td>
+                <td>
+                    {% if u.est_actif %}
+                    <form method="post" action="{% url 'administration:utilisateur-desactiver' u.pk %}" class="inline-form">
+                        {% csrf_token %}
+                        <button type="submit">Désactiver</button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{% url 'administration:utilisateur-activer' u.pk %}" class="inline-form">
+                        {% csrf_token %}
+                        <button type="submit">Activer</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">Aucun utilisateur.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

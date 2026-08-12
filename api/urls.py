@@ -1,0 +1,155 @@
+"""
+Routes de l'API REST.
+"""
+
+from django.urls import path
+
+from .views import (
+    ApiRootView,
+    BeneficiaireDetailAPIView,
+    BeneficiaireListCreateAPIView,
+    HistoriqueDetailAPIView,
+    HistoriqueListAPIView,
+    PaiementDetailAPIView,
+    PaiementListCreateAPIView,
+    RemboursementDetailAPIView,
+    RemboursementListCreateAPIView,
+    UtilisateurDetailAPIView,
+    UtilisateurListAPIView,
+    UtilisateurWalletAPIView,
+    VirementDetailAPIView,
+    VirementListCreateAPIView,
+    WalletDetailAPIView,
+    WalletHistoriqueAPIView,
+)
+from .views_admin import (
+    AdminDashboardAPIView,
+    AdminEvenementDetailAPIView,
+    AdminEvenementListAPIView,
+    AdminExportAPIView,
+    AdminOperationsAPIView,
+    AdminParametresAPIView,
+    AdminRapportsAPIView,
+    AdminStatistiquesAPIView,
+    AdminUtilisateursAPIView,
+    AdminWalletsAPIView,
+)
+
+app_name = 'api'
+
+urlpatterns = [
+    path('', ApiRootView.as_view(), name='root'),
+    path('utilisateurs/', UtilisateurListAPIView.as_view(), name='utilisateur-list'),
+    path(
+        'utilisateurs/<int:pk>/',
+        UtilisateurDetailAPIView.as_view(),
+        name='utilisateur-detail',
+    ),
+    path(
+        'utilisateurs/<int:pk>/wallet/',
+        UtilisateurWalletAPIView.as_view(),
+        name='utilisateur-wallet',
+    ),
+    path('wallets/<int:pk>/', WalletDetailAPIView.as_view(), name='wallet-detail'),
+    path(
+        'wallets/<int:pk>/historique/',
+        WalletHistoriqueAPIView.as_view(),
+        name='wallet-historique',
+    ),
+    path('historique/', HistoriqueListAPIView.as_view(), name='historique-list'),
+    path(
+        'historique/<int:pk>/',
+        HistoriqueDetailAPIView.as_view(),
+        name='historique-detail',
+    ),
+    path(
+        'beneficiaires/',
+        BeneficiaireListCreateAPIView.as_view(),
+        name='beneficiaire-list-create',
+    ),
+    path(
+        'beneficiaires/<int:pk>/',
+        BeneficiaireDetailAPIView.as_view(),
+        name='beneficiaire-detail',
+    ),
+    path(
+        'virements/',
+        VirementListCreateAPIView.as_view(),
+        name='virement-list-create',
+    ),
+    path(
+        'virements/<int:pk>/',
+        VirementDetailAPIView.as_view(),
+        name='virement-detail',
+    ),
+    path(
+        'paiements/',
+        PaiementListCreateAPIView.as_view(),
+        name='paiement-list-create',
+    ),
+    path(
+        'paiements/<int:pk>/',
+        PaiementDetailAPIView.as_view(),
+        name='paiement-detail',
+    ),
+    path(
+        'remboursements/',
+        RemboursementListCreateAPIView.as_view(),
+        name='remboursement-list-create',
+    ),
+    path(
+        'remboursements/<int:pk>/',
+        RemboursementDetailAPIView.as_view(),
+        name='remboursement-detail',
+    ),
+    path(
+        'administration/parametres/',
+        AdminParametresAPIView.as_view(),
+        name='admin-parametres',
+    ),
+    path(
+        'administration/utilisateurs/',
+        AdminUtilisateursAPIView.as_view(),
+        name='admin-utilisateurs',
+    ),
+    path(
+        'administration/wallets/',
+        AdminWalletsAPIView.as_view(),
+        name='admin-wallets',
+    ),
+    path(
+        'administration/operations/',
+        AdminOperationsAPIView.as_view(),
+        name='admin-operations',
+    ),
+    path(
+        'administration/dashboard/',
+        AdminDashboardAPIView.as_view(),
+        name='admin-dashboard',
+    ),
+    path(
+        'administration/statistiques/',
+        AdminStatistiquesAPIView.as_view(),
+        name='admin-statistiques',
+    ),
+    path(
+        'administration/rapports/',
+        AdminRapportsAPIView.as_view(),
+        name='admin-rapports',
+    ),
+    path(
+        'administration/evenements/',
+        AdminEvenementListAPIView.as_view(),
+        name='admin-evenement-list',
+    ),
+    path(
+        'administration/evenements/<int:pk>/',
+        AdminEvenementDetailAPIView.as_view(),
+        name='admin-evenement-detail',
+    ),
+    path(
+        'administration/exports/',
+        AdminExportAPIView.as_view(),
+        name='admin-exports',
+    ),
+]

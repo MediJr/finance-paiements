@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Admin — Wallets{% endblock %}
+{% block content %}
+<section>
+    <p class="breadcrumb"><a href="{% url 'administration:index' %}">Administration</a> / Wallets</p>
+    <h1>Wallets</h1>
+    <p class="lead">Consultation uniquement — aucune modification de solde.</p>
+    <form method="get" class="filter-form">
+        <label>Recherche <input type="text" name="q" value="{{ filtre_q }}"></label>
+        <label>Statut
+            <select name="statut">
+                <option value="">Tous</option>
+                {% for value, label in statut_choices %}
+                <option value="{{ value }}" {% if filtre_statut == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Devise <input type="text" name="devise" value="{{ filtre_devise }}" maxlength="3"></label>
+        <button type="submit">Filtrer</button>
+    </form>
+    <table class="data-table">
+        <thead>
+            <tr><th>ID</th><th>Propriétaire</th><th>Solde</th><th>Devise</th><th>Statut</th></tr>
+        </thead>
+        <tbody>
+            {% for w in wallets %}
+            <tr>
+                <td>{{ w.pk }}</td>
+                <td>{{ w.utilisateur.prenom }} {{ w.utilisateur.nom }}</td>
+                <td>{{ w.solde }}</td>
+                <td>{{ w.devise }}</td>
+                <td>{{ w.get_statut_display }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">Aucun Wallet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

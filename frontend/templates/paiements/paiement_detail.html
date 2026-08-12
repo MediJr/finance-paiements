@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{ paiement.reference }}{% endblock %}
+{% block content %}
+<section>
+    <p class="breadcrumb"><a href="{% url 'paiements:paiement-list' %}">Paiements</a> / Détail</p>
+    <h1>{{ paiement.reference }}</h1>
+    <dl class="detail-list">
+        <dt>Payeur</dt>
+        <dd>#{{ paiement.wallet_payeur_id }} — {{ paiement.wallet_payeur.utilisateur.prenom }} {{ paiement.wallet_payeur.utilisateur.nom }}</dd>
+        <dt>Bénéficiaire</dt>
+        <dd>#{{ paiement.wallet_beneficiaire_id }} — {{ paiement.wallet_beneficiaire.utilisateur.prenom }} {{ paiement.wallet_beneficiaire.utilisateur.nom }}</dd>
+        <dt>Montant</dt>
+        <dd>{{ paiement.montant }} {{ paiement.devise }}</dd>
+        <dt>Remboursé</dt>
+        <dd>{{ paiement.montant_rembourse }} {{ paiement.devise }}</dd>
+        <dt>Reste</dt>
+        <dd>{{ paiement.montant_restant }} {{ paiement.devise }}</dd>
+        <dt>Statut</dt>
+        <dd>{{ paiement.get_statut_display }}</dd>
+        <dt>Motif</dt>
+        <dd>{{ paiement.motif|default:"—" }}</dd>
+        <dt>Créé le</dt>
+        <dd>{{ paiement.date_creation }}</dd>
+    </dl>
+</section>
+{% endblock %}

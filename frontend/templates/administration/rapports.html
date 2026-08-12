@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Rapports{% endblock %}
+{% block content %}
+<section>
+    <h1>Rapports</h1>
+    <p class="lead">Rapports consultables en lecture seule.</p>
+
+    <form method="get" class="filter-form">
+        <label>Type
+            <select name="type">
+                {% for t in types_rapport %}
+                <option value="{{ t }}" {% if type_rapport == t %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Début
+            <input type="date" name="date_debut" value="{{ filtre_date_debut }}">
+        </label>
+        <label>Fin
+            <input type="date" name="date_fin" value="{{ filtre_date_fin }}">
+        </label>
+        <label>Statut
+            <input type="text" name="statut" value="{{ filtre_statut }}">
+        </label>
+        <label>Utilisateur (id)
+            <input type="number" name="utilisateur" value="{{ filtre_utilisateur }}" min="1">
+        </label>
+        <button type="submit">Afficher</button>
+    </form>
+
+    {% if rapport %}
+    <h2>Rapport — {{ rapport.type }}</h2>
+    <dl class="detail-list">
+        {% for key, value in rapport.totaux.items %}
+        <dt>{{ key }}</dt><dd>{{ value }}</dd>
+        {% endfor %}
+    </dl>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                {% if rapport.lignes %}
+                    {% for key in rapport.lignes.0.keys %}
+                    <th>{{ key }}</th>
+                    {% endfor %}
+                {% else %}
+                    <th>Aucune ligne</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for ligne in rapport.lignes %}
+            <tr>
+                {% for value in ligne.values %}
+                <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+            {% empty %}
+            <tr><td>Aucune donnée pour ce rapport.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <p><a href="{% url 'administration:index' %}">Retour administration</a></p>
+</section>
+{% endblock %}

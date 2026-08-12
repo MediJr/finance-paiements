@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Nouveau remboursement{% endblock %}
+{% block content %}
+<section>
+    <p class="breadcrumb"><a href="{% url 'paiements:remboursement-list' %}">Remboursements</a> / Nouveau</p>
+    <h1>Nouveau remboursement</h1>
+    <p class="lead">Réservé aux paiements reçus encore remboursables.</p>
+    <form method="post" class="entity-form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <ul class="form-errors">{% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+        {% for field in form %}
+        <label>{{ field.label }}{{ field }}{% if field.errors %}<span class="field-error">{{ field.errors|striptags }}</span>{% endif %}</label>
+        {% endfor %}
+        <div class="form-actions">
+            <button type="submit">Exécuter le remboursement</button>
+            <a href="{% url 'paiements:remboursement-list' %}">Annuler</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

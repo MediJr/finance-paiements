@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Administration{% endblock %}
+{% block content %}
+<section>
+    <h1>Administration</h1>
+    <p class="lead">Supervision, configuration et pilotage — accès administrateur.</p>
+    {% if parametres.mode_maintenance %}
+    <p class="messages"><li class="error">Mode maintenance activé.</li></p>
+    {% endif %}
+
+    <div class="kpi-grid kpi-grid-compact">
+        <div class="kpi-card">
+            <span class="kpi-label">Utilisateurs</span>
+            <span class="kpi-value">{{ dashboard.utilisateurs }}</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Wallets</span>
+            <span class="kpi-value">{{ dashboard.wallets }}</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Virements</span>
+            <span class="kpi-value">{{ dashboard.virements }}</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Paiements</span>
+            <span class="kpi-value">{{ dashboard.paiements }}</span>
+        </div>
+    </div>
+
+    <ul class="admin-links">
+        <li><a href="{% url 'administration:dashboard' %}">Tableau de bord</a></li>
+        <li><a href="{% url 'administration:statistiques' %}">Statistiques</a></li>
+        <li><a href="{% url 'administration:rapports' %}">Rapports</a></li>
+        <li><a href="{% url 'administration:exports' %}">Exports CSV / JSON</a></li>
+        <li><a href="{% url 'administration:parametres' %}">Paramètres généraux</a></li>
+        <li><a href="{% url 'administration:utilisateurs' %}">Utilisateurs ({{ nb_utilisateurs }})</a></li>
+        <li><a href="{% url 'administration:wallets' %}">Wallets ({{ nb_wallets }})</a></li>
+        <li><a href="{% url 'administration:operations' %}">Opérations</a></li>
+        <li><a href="{% url 'observabilite:evenement-list' %}">Journal d'événements</a></li>
+        <li><a href="{% url 'administration:journal' %}">Journal d'administration</a></li>
+    </ul>
+</section>
+{% endblock %}

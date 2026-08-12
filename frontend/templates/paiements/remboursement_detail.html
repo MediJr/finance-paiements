@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ remboursement.reference }}{% endblock %}
+{% block content %}
+<section>
+    <p class="breadcrumb"><a href="{% url 'paiements:remboursement-list' %}">Remboursements</a> / Détail</p>
+    <h1>{{ remboursement.reference }}</h1>
+    <dl class="detail-list">
+        <dt>Paiement</dt>
+        <dd><a href="{% url 'paiements:paiement-detail' remboursement.paiement_id %}">{{ remboursement.paiement.reference }}</a></dd>
+        <dt>Remboursant</dt>
+        <dd>#{{ remboursement.wallet_remboursant_id }}</dd>
+        <dt>Remboursé</dt>
+        <dd>#{{ remboursement.wallet_rembourse_id }}</dd>
+        <dt>Montant</dt>
+        <dd>{{ remboursement.montant }} {{ remboursement.devise }}</dd>
+        <dt>Statut</dt>
+        <dd>{{ remboursement.get_statut_display }}</dd>
+        <dt>Créé le</dt>
+        <dd>{{ remboursement.date_creation }}</dd>
+    </dl>
+</section>
+{% endblock %}

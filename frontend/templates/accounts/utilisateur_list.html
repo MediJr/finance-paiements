@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Utilisateurs</h1>
+    <p class="lead">Liste des utilisateurs métier de la plateforme.</p>
+
+    {% if utilisateurs %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>E-mail</th>
+                <th>Téléphone</th>
+                <th>État</th>
+                <th>Wallet</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in utilisateurs %}
+            <tr>
+                <td><a href="{% url 'accounts:utilisateur-detail' u.pk %}">{{ u.pk }}</a></td>
+                <td>{{ u.prenom }} {{ u.nom }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.telephone|default:"—" }}</td>
+                <td>{% if u.est_actif %}Actif{% else %}Inactif{% endif %}</td>
+                <td>
+                    {% if u.wallet %}
+                        <a href="{% url 'wallets:wallet-detail' u.wallet.pk %}">#{{ u.wallet.pk }}</a>
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Aucun utilisateur pour le moment.</p>
+    {% endif %}
+</section>
+{% endblock %}

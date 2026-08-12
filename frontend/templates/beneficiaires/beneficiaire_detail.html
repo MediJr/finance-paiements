@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Bénéficiaire{% endblock %}
+
+{% block content %}
+<section>
+    <p class="breadcrumb">
+        <a href="{% url 'beneficiaires:beneficiaire-list' %}">Bénéficiaires</a> / Détail
+    </p>
+    <div class="section-header">
+        <h1>
+            {% if beneficiaire.alias %}
+                {{ beneficiaire.alias }}
+            {% else %}
+                {{ beneficiaire.utilisateur_beneficiaire.prenom }}
+                {{ beneficiaire.utilisateur_beneficiaire.nom }}
+            {% endif %}
+        </h1>
+        <a class="btn" href="{% url 'beneficiaires:beneficiaire-update' beneficiaire.pk %}">Modifier</a>
+    </div>
+
+    <dl class="detail-list">
+        <dt>Identifiant</dt>
+        <dd>{{ beneficiaire.pk }}</dd>
+        <dt>Bénéficiaire</dt>
+        <dd>
+            {{ beneficiaire.utilisateur_beneficiaire.prenom }}
+            {{ beneficiaire.utilisateur_beneficiaire.nom }}
+        </dd>
+        <dt>E-mail</dt>
+        <dd>{{ beneficiaire.utilisateur_beneficiaire.email }}</dd>
+        <dt>Alias</dt>
+        <dd>{{ beneficiaire.alias|default:"—" }}</dd>
+        <dt>Statut</dt>
+        <dd>{{ beneficiaire.get_statut_display }}</dd>
+        <dt>Créé le</dt>
+        <dd>{{ beneficiaire.date_creation }}</dd>
+        <dt>Mis à jour le</dt>
+        <dd>{{ beneficiaire.date_mise_a_jour }}</dd>
+    </dl>
+</section>
+{% endblock %}

@@ -1,0 +1,57 @@
+applications/11-finance/
+├── backend/
+│   ├── config/
+│   │   ├── settings/
+│   │   │   ├── __init__.py
+│   │   │   ├── base.py
+│   │   │   ├── development.py
+│   │   │   └── test.py
+│   │   ├── __init__.py
+│   │   ├── asgi.py
+│   │   ├── urls.py
+│   │   └── wsgi.py
+│   ├── manage.py
+│   └── README.md
+├── frontend/
+│   ├── static/css/
+│   ├── static/js/
+│   ├── templates/
+│   └── README.md
+├── api/
+│   ├── migrations/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── urls.py
+│   ├── views.py
+│   └── README.md
+├── database/
+│   ├── init/01-init.sql
+│   └── README.md
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py
+│   ├── test_configuration.py
+│   └── README.md
+├── docs/
+│   ├── architecture.md
+│   ├── installation.md
+│   ├── versions.md
+│   └── README.md
+├── docker/
+│   ├── Dockerfile
+│   ├── docker-compose.yml
+│   └── README.md
+├── livrables/
+│   ├── Sprint-00/
+│   │   ├── rapport-technique.md
+│   │   └── structure-dossiers.txt
+│   └── README.md
+├── media/
+├── .env.example
+├── .gitignore
+├── CHANGELOG.md
+├── pytest.ini
+├── README.md
+└── requirements.txt

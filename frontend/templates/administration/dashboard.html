@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Tableau de bord{% endblock %}
+{% block content %}
+<section>
+    <h1>Tableau de bord</h1>
+    <p class="lead">Vue globale de l'activité — accès administrateur.</p>
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <span class="kpi-label">Utilisateurs</span>
+            <span class="kpi-value">{{ dashboard.utilisateurs }}</span>
+            <span class="kpi-meta">{{ dashboard.utilisateurs_actifs }} actifs</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Wallets actifs</span>
+            <span class="kpi-value">{{ dashboard.wallets_actifs }}</span>
+            <span class="kpi-meta">{{ dashboard.wallets }} au total</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Bénéficiaires</span>
+            <span class="kpi-value">{{ dashboard.beneficiaires }}</span>
+            <span class="kpi-meta">{{ dashboard.beneficiaires_actifs }} actifs</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Virements</span>
+            <span class="kpi-value">{{ dashboard.virements }}</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Paiements</span>
+            <span class="kpi-value">{{ dashboard.paiements }}</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Remboursements</span>
+            <span class="kpi-value">{{ dashboard.remboursements }}</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Opérations</span>
+            <span class="kpi-value">{{ dashboard.operations }}</span>
+            <span class="kpi-meta">historique</span>
+        </div>
+    </div>
+    <p>
+        <a class="btn" href="{% url 'administration:statistiques' %}">Statistiques</a>
+        <a class="btn" href="{% url 'administration:rapports' %}">Rapports</a>
+        <a href="{% url 'administration:index' %}">Retour administration</a>
+    </p>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Paramètres{% endblock %}
+{% block content %}
+<section>
+    <p class="breadcrumb"><a href="{% url 'administration:index' %}">Administration</a> / Paramètres</p>
+    <h1>Paramètres généraux</h1>
+    <form method="post" class="entity-form">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <ul class="form-errors">{% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}</ul>
+        {% endif %}
+        {% for field in form %}
+        <label>
+            {{ field.label }}
+            {{ field }}
+            {% if field.errors %}<span class="field-error">{{ field.errors|striptags }}</span>{% endif %}
+        </label>
+        {% endfor %}
+        <div class="form-actions">
+            <button type="submit">Enregistrer</button>
+            <a href="{% url 'administration:index' %}">Retour</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ utilisateur.prenom }} {{ utilisateur.nom }}{% endblock %}
+
+{% block content %}
+<section>
+    <p class="breadcrumb"><a href="{% url 'accounts:utilisateur-list' %}">Utilisateurs</a> / Détail</p>
+    <h1>{{ utilisateur.prenom }} {{ utilisateur.nom }}</h1>
+
+    <dl class="detail-list">
+        <dt>Identifiant</dt>
+        <dd>{{ utilisateur.pk }}</dd>
+        <dt>Compte auth</dt>
+        <dd>{{ utilisateur.user.username }}</dd>
+        <dt>E-mail</dt>
+        <dd>{{ utilisateur.email }}</dd>
+        <dt>Téléphone</dt>
+        <dd>{{ utilisateur.telephone|default:"—" }}</dd>
+        <dt>État</dt>
+        <dd>{% if utilisateur.est_actif %}Actif{% else %}Inactif{% endif %}</dd>
+        <dt>Créé le</dt>
+        <dd>{{ utilisateur.date_creation }}</dd>
+        <dt>Mis à jour le</dt>
+        <dd>{{ utilisateur.date_mise_a_jour }}</dd>
+    </dl>
+
+    <h2>Wallet</h2>
+    {% if wallet %}
+    <dl class="detail-list">
+        <dt>Identifiant</dt>
+        <dd><a href="{% url 'wallets:wallet-detail' wallet.pk %}">#{{ wallet.pk }}</a></dd>
+        <dt>Solde</dt>
+        <dd>{{ wallet.solde }} {{ wallet.devise }}</dd>
+        <dt>Statut</dt>
+        <dd>{{ wallet.get_statut_display }}</dd>
+    </dl>
+    {% else %}
+    <p>Aucun Wallet associé.</p>
+    {% endif %}
+</section>
+{% endblock %}

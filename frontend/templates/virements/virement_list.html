@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Virements{% endblock %}
+
+{% block content %}
+<section>
+    <div class="section-header">
+        <div>
+            <h1>Virements</h1>
+            <p class="lead">Historique des virements émis et reçus.</p>
+        </div>
+        <a class="btn" href="{% url 'virements:virement-create' %}">Nouveau virement</a>
+    </div>
+
+    {% if virements %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Émetteur</th>
+                <th>Bénéficiaire</th>
+                <th>Montant</th>
+                <th>Statut</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in virements %}
+            <tr>
+                <td><a href="{% url 'virements:virement-detail' v.pk %}">{{ v.reference }}</a></td>
+                <td>#{{ v.wallet_emetteur_id }} — {{ v.wallet_emetteur.utilisateur.prenom }} {{ v.wallet_emetteur.utilisateur.nom }}</td>
+                <td>#{{ v.wallet_beneficiaire_id }} — {{ v.wallet_beneficiaire.utilisateur.prenom }} {{ v.wallet_beneficiaire.utilisateur.nom }}</td>
+                <td>{{ v.montant }} {{ v.devise }}</td>
+                <td>{{ v.get_statut_display }}</td>
+                <td>{{ v.date_creation }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Aucun virement pour le moment.</p>
+    {% endif %}
+</section>
+{% endblock %}

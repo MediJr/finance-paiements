@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Événements{% endblock %}
+{% block content %}
+<section>
+    <h1>Journal d'événements</h1>
+    <p class="lead">Observabilité — consultation administrateur (lecture seule).</p>
+
+    <form method="get" class="filter-form">
+        <label>Recherche
+            <input type="text" name="q" value="{{ filtre_q }}" placeholder="description, type…">
+        </label>
+        <label>Niveau
+            <select name="niveau">
+                <option value="">Tous</option>
+                {% for value, label in niveau_choices %}
+                <option value="{{ value }}" {% if filtre_niveau == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Module
+            <input type="text" name="module" value="{{ filtre_module }}">
+        </label>
+        <label>Type
+            <input type="text" name="type" value="{{ filtre_type }}">
+        </label>
+        <label>Utilisateur (id auth)
+            <input type="number" name="utilisateur" value="{{ filtre_utilisateur }}" min="1">
+        </label>
+        <label>Début
+            <input type="date" name="date_debut" value="{{ filtre_date_debut }}">
+        </label>
+        <label>Fin
+            <input type="date" name="date_fin" value="{{ filtre_date_fin }}">
+        </label>
+        <button type="submit">Filtrer</button>
+    </form>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Niveau</th>
+                <th>Module</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in evenements %}
+            <tr>
+                <td>{{ e.id }}</td>
+                <td>{{ e.date_creation }}</td>
+                <td>{{ e.niveau }}</td>
+                <td>{{ e.module }}</td>
+                <td>{{ e.type_evenement }}</td>
+                <td>{{ e.description|truncatechars:80 }}</td>
+                <td><a href="{% url 'observabilite:evenement-detail' e.pk %}">Détail</a></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7">Aucun événement.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><a href="{% url 'administration:index' %}">Retour administration</a></p>
+</section>
+{% endblock %}

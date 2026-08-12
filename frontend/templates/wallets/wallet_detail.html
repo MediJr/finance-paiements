@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Wallet #{{ wallet.pk }}{% endblock %}
+
+{% block content %}
+<section>
+    <p class="breadcrumb">
+        <a href="{% url 'accounts:utilisateur-list' %}">Utilisateurs</a> /
+        <a href="{% url 'accounts:utilisateur-detail' wallet.utilisateur.pk %}">
+            {{ wallet.utilisateur.prenom }} {{ wallet.utilisateur.nom }}
+        </a> /
+        Wallet
+    </p>
+    <h1>Wallet #{{ wallet.pk }}</h1>
+    <p class="lead">Consultation en lecture seule — aucune opération financière.</p>
+
+    <dl class="detail-list">
+        <dt>Propriétaire</dt>
+        <dd>
+            <a href="{% url 'accounts:utilisateur-detail' wallet.utilisateur.pk %}">
+                {{ wallet.utilisateur.prenom }} {{ wallet.utilisateur.nom }}
+            </a>
+        </dd>
+        <dt>Solde</dt>
+        <dd>{{ wallet.solde }} {{ wallet.devise }}</dd>
+        <dt>Statut</dt>
+        <dd>{{ wallet.get_statut_display }}</dd>
+        <dt>Créé le</dt>
+        <dd>{{ wallet.date_creation }}</dd>
+        <dt>Mis à jour le</dt>
+        <dd>{{ wallet.date_mise_a_jour }}</dd>
+    </dl>
+</section>
+{% endblock %}

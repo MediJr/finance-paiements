@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Opération {{ operation.reference }}{% endblock %}
+
+{% block content %}
+<section>
+    <p class="breadcrumb">
+        <a href="{% url 'historique:historique-list' %}">Historique</a> / Détail
+    </p>
+    <h1>{{ operation.reference }}</h1>
+    <p class="lead">Consultation en lecture seule.</p>
+
+    <dl class="detail-list">
+        <dt>Identifiant</dt>
+        <dd>{{ operation.pk }}</dd>
+        <dt>Wallet</dt>
+        <dd>
+            <a href="{% url 'wallets:wallet-detail' operation.wallet_id %}">
+                #{{ operation.wallet_id }}
+            </a>
+        </dd>
+        <dt>Type</dt>
+        <dd>{{ operation.get_type_operation_display }}</dd>
+        <dt>Statut</dt>
+        <dd>{{ operation.get_statut_display }}</dd>
+        <dt>Description</dt>
+        <dd>{{ operation.description|default:"—" }}</dd>
+        <dt>Montant</dt>
+        <dd>
+            {% if operation.montant is not None %}
+                {{ operation.montant }} {{ operation.devise }}
+            {% else %}
+                —
+            {% endif %}
+        </dd>
+        <dt>Devise</dt>
+        <dd>{{ operation.devise }}</dd>
+        <dt>Référence</dt>
+        <dd>{{ operation.reference }}</dd>
+        <dt>Créé le</dt>
+        <dd>{{ operation.date_creation }}</dd>
+        <dt>Mis à jour le</dt>
+        <dd>{{ operation.date_mise_a_jour }}</dd>
+    </dl>
+</section>
+{% endblock %}

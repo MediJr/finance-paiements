@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Paiements{% endblock %}
+{% block content %}
+<section>
+    <div class="section-header">
+        <div>
+            <h1>Paiements</h1>
+            <p class="lead">Paiements émis et reçus.</p>
+        </div>
+        <a class="btn" href="{% url 'paiements:paiement-create' %}">Nouveau paiement</a>
+    </div>
+    {% if paiements %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Référence</th>
+                <th>Payeur</th>
+                <th>Bénéficiaire</th>
+                <th>Montant</th>
+                <th>Remboursé</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in paiements %}
+            <tr>
+                <td><a href="{% url 'paiements:paiement-detail' p.pk %}">{{ p.reference }}</a></td>
+                <td>{{ p.wallet_payeur.utilisateur.prenom }} {{ p.wallet_payeur.utilisateur.nom }}</td>
+                <td>{{ p.wallet_beneficiaire.utilisateur.prenom }} {{ p.wallet_beneficiaire.utilisateur.nom }}</td>
+                <td>{{ p.montant }} {{ p.devise }}</td>
+                <td>{{ p.montant_rembourse }} {{ p.devise }}</td>
+                <td>{{ p.get_statut_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Aucun paiement.</p>
+    {% endif %}
+</section>
+{% endblock %}

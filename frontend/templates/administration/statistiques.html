@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Statistiques{% endblock %}
+{% block content %}
+<section>
+    <h1>Statistiques</h1>
+    <p class="lead">Indicateurs métier simples — lecture seule.</p>
+
+    <form method="get" class="filter-form">
+        <label>Début
+            <input type="date" name="date_debut" value="{{ filtre_date_debut }}">
+        </label>
+        <label>Fin
+            <input type="date" name="date_fin" value="{{ filtre_date_fin }}">
+        </label>
+        <label>Statut
+            <input type="text" name="statut" value="{{ filtre_statut }}" placeholder="ex. reussi">
+        </label>
+        <label>Utilisateur (id)
+            <input type="number" name="utilisateur" value="{{ filtre_utilisateur }}" min="1">
+        </label>
+        <button type="submit">Filtrer</button>
+    </form>
+
+    {% if stats %}
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <span class="kpi-label">Virements</span>
+            <span class="kpi-value">{{ stats.virements.nombre }}</span>
+            <span class="kpi-meta">{{ stats.virements.montant_cumule }} cumulé</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Paiements</span>
+            <span class="kpi-value">{{ stats.paiements.nombre }}</span>
+            <span class="kpi-meta">{{ stats.paiements.montant_cumule }} cumulé</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Remboursements</span>
+            <span class="kpi-value">{{ stats.remboursements.nombre }}</span>
+            <span class="kpi-meta">{{ stats.remboursements.montant_cumule }} cumulé</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Wallets</span>
+            <span class="kpi-value">{{ stats.wallets.nombre }}</span>
+            <span class="kpi-meta">solde {{ stats.wallets.solde_cumule }}</span>
+        </div>
+    </div>
+
+    <h2>Répartition par statut</h2>
+    <table class="data-table">
+        <thead>
+            <tr><th>Domaine</th><th>Statut</th><th>Nombre</th></tr>
+        </thead>
+        <tbody>
+            {% for statut, nb in stats.virements.par_statut.items %}
+            <tr><td>Virements</td><td>{{ statut }}</td><td>{{ nb }}</td></tr>
+            {% endfor %}
+            {% for statut, nb in stats.paiements.par_statut.items %}
+            <tr><td>Paiements</td><td>{{ statut }}</td><td>{{ nb }}</td></tr>
+            {% endfor %}
+            {% for statut, nb in stats.remboursements.par_statut.items %}
+            <tr><td>Remboursements</td><td>{{ statut }}</td><td>{{ nb }}</td></tr>
+            {% endfor %}
+            {% if not stats.virements.par_statut and not stats.paiements.par_statut and not stats.remboursements.par_statut %}
+            <tr><td colspan="3">Aucune donnée.</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <h2>Activité par période</h2>
+    <table class="data-table">
+        <thead>
+            <tr><th>Jour</th><th>Virements</th><th>Paiements</th><th>Remboursements</th></tr>
+        </thead>
+        <tbody>
+            {% for jour in stats.activite_par_periode %}
+            <tr>
+                <td>{{ jour.jour }}</td>
+                <td>{{ jour.virements }}</td>
+                <td>{{ jour.paiements }}</td>
+                <td>{{ jour.remboursements }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">Aucune activité sur la période.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <p><a href="{% url 'administration:index' %}">Retour administration</a></p>
+</section>
+{% endblock %}

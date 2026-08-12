@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ virement.reference }}{% endblock %}
+
+{% block content %}
+<section>
+    <p class="breadcrumb">
+        <a href="{% url 'virements:virement-list' %}">Virements</a> / Détail
+    </p>
+    <h1>{{ virement.reference }}</h1>
+
+    <dl class="detail-list">
+        <dt>Identifiant</dt>
+        <dd>{{ virement.pk }}</dd>
+        <dt>Wallet émetteur</dt>
+        <dd>
+            <a href="{% url 'wallets:wallet-detail' virement.wallet_emetteur_id %}">
+                #{{ virement.wallet_emetteur_id }}
+            </a>
+            — {{ virement.wallet_emetteur.utilisateur.prenom }}
+            {{ virement.wallet_emetteur.utilisateur.nom }}
+        </dd>
+        <dt>Wallet bénéficiaire</dt>
+        <dd>
+            <a href="{% url 'wallets:wallet-detail' virement.wallet_beneficiaire_id %}">
+                #{{ virement.wallet_beneficiaire_id }}
+            </a>
+            — {{ virement.wallet_beneficiaire.utilisateur.prenom }}
+            {{ virement.wallet_beneficiaire.utilisateur.nom }}
+        </dd>
+        <dt>Montant</dt>
+        <dd>{{ virement.montant }} {{ virement.devise }}</dd>
+        <dt>Statut</dt>
+        <dd>{{ virement.get_statut_display }}</dd>
+        <dt>Motif</dt>
+        <dd>{{ virement.motif|default:"—" }}</dd>
+        <dt>Créé le</dt>
+        <dd>{{ virement.date_creation }}</dd>
+        <dt>Mis à jour le</dt>
+        <dd>{{ virement.date_mise_a_jour }}</dd>
+    </dl>
+</section>
+{% endblock %}

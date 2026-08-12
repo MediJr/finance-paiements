@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Bénéficiaires{% endblock %}
+
+{% block content %}
+<section>
+    <div class="section-header">
+        <div>
+            <h1>Bénéficiaires</h1>
+            <p class="lead">Destinataires autorisés pour de futures opérations.</p>
+        </div>
+        <a class="btn" href="{% url 'beneficiaires:beneficiaire-create' %}">Ajouter</a>
+    </div>
+
+    <form method="get" class="filter-form">
+        <label>
+            Statut
+            <select name="statut">
+                <option value="">Tous</option>
+                <option value="actif" {% if filtre_statut == 'actif' %}selected{% endif %}>Actif</option>
+                <option value="inactif" {% if filtre_statut == 'inactif' %}selected{% endif %}>Inactif</option>
+            </select>
+        </label>
+        <button type="submit">Filtrer</button>
+    </form>
+
+    {% if beneficiaires %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Alias</th>
+                <th>Bénéficiaire</th>
+                <th>E-mail</th>
+                <th>Statut</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in beneficiaires %}
+            <tr>
+                <td><a href="{% url 'beneficiaires:beneficiaire-detail' b.pk %}">{{ b.pk }}</a></td>
+                <td>{{ b.alias|default:"—" }}</td>
+                <td>{{ b.utilisateur_beneficiaire.prenom }} {{ b.utilisateur_beneficiaire.nom }}</td>
+                <td>{{ b.utilisateur_beneficiaire.email }}</td>
+                <td>{{ b.get_statut_display }}</td>
+                <td><a href="{% url 'beneficiaires:beneficiaire-update' b.pk %}">Modifier</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Aucun bénéficiaire pour le moment.</p>
+    {% endif %}
+</section>
+{% endblock %}

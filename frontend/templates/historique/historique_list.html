@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Historique{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Historique des opérations</h1>
+    <p class="lead">Consultation en lecture seule — aucune opération financière.</p>
+
+    <form method="get" class="filter-form">
+        <label>
+            Wallet
+            <input type="number" name="wallet" value="{{ filters.wallet }}" min="1">
+        </label>
+        <label>
+            Type
+            <select name="type">
+                <option value="">Tous</option>
+                {% for value, label in type_choices %}
+                    <option value="{{ value }}" {% if filters.type == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Statut
+            <select name="statut">
+                <option value="">Tous</option>
+                {% for value, label in statut_choices %}
+                    <option value="{{ value }}" {% if filters.statut == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Du
+            <input type="date" name="date_debut" value="{{ filters.date_debut }}">
+        </label>
+        <label>
+            Au
+            <input type="date" name="date_fin" value="{{ filters.date_fin }}">
+        </label>
+        <label>
+            Référence
+            <input type="text" name="reference" value="{{ filters.reference }}">
+        </label>
+        <button type="submit">Filtrer</button>
+    </form>
+
+    {% if operations %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Référence</th>
+                <th>Wallet</th>
+                <th>Type</th>
+                <th>Statut</th>
+                <th>Montant</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for op in operations %}
+            <tr>
+                <td><a href="{% url 'historique:historique-detail' op.pk %}">{{ op.pk }}</a></td>
+                <td>{{ op.reference }}</td>
+                <td>
+                    <a href="{% url 'wallets:wallet-detail' op.wallet_id %}">#{{ op.wallet_id }}</a>
+                </td>
+                <td>{{ op.get_type_operation_display }}</td>
+                <td>{{ op.get_statut_display }}</td>
+                <td>
+                    {% if op.montant is not None %}
+                        {{ op.montant }} {{ op.devise }}
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+                <td>{{ op.date_creation }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Aucune opération trouvée.</p>
+    {% endif %}
+</section>
+{% endblock %}

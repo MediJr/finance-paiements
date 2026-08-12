@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Exports{% endblock %}
+{% block content %}
+<section>
+    <h1>Exports de données</h1>
+    <p class="lead">Téléchargement CSV / JSON — accès administrateur uniquement.</p>
+
+    <form method="get" action="{% url 'administration:export-download' %}" class="filter-form entity-form">
+        <label>Type de données
+            <select name="type" required>
+                {% for t in types_export %}
+                <option value="{{ t }}" {% if filtre_type == t %}selected{% endif %}>{{ t }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Format
+            <select name="format" required>
+                {% for f in formats_export %}
+                <option value="{{ f }}" {% if filtre_format == f %}selected{% endif %}>{{ f|upper }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Début
+            <input type="date" name="date_debut" value="{{ filtre_date_debut }}">
+        </label>
+        <label>Fin
+            <input type="date" name="date_fin" value="{{ filtre_date_fin }}">
+        </label>
+        <label>Statut / niveau
+            <input type="text" name="statut" value="{{ filtre_statut }}" placeholder="ex. reussi, INFO, actif">
+        </label>
+        <div class="form-actions">
+            <button type="submit">Télécharger</button>
+            <a href="{% url 'administration:index' %}">Retour</a>
+        </div>
+    </form>
+
+    <h2>Jeux disponibles</h2>
+    <ul>
+        {% for t in types_export %}
+        <li>{{ t }}</li>
+        {% endfor %}
+    </ul>
+    <p class="lead">Format documenté : <code>finance-export-v1</code> (voir documentation).</p>
+</section>
+{% endblock %}

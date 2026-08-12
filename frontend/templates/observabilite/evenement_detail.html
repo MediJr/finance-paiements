@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Événement #{{ evenement.id }}{% endblock %}
+{% block content %}
+<section>
+    <p class="breadcrumb"><a href="{% url 'observabilite:evenement-list' %}">Événements</a></p>
+    <h1>Événement #{{ evenement.id }}</h1>
+    <dl class="detail-list">
+        <dt>Date</dt><dd>{{ evenement.date_creation }}</dd>
+        <dt>Niveau</dt><dd>{{ evenement.niveau }}</dd>
+        <dt>Module</dt><dd>{{ evenement.module }}</dd>
+        <dt>Type</dt><dd>{{ evenement.type_evenement }}</dd>
+        <dt>Utilisateur</dt>
+        <dd>{% if evenement.utilisateur %}{{ evenement.utilisateur.username }} (#{{ evenement.utilisateur_id }}){% else %}—{% endif %}</dd>
+        <dt>Description</dt><dd>{{ evenement.description }}</dd>
+        <dt>Adresse IP</dt><dd>{{ evenement.adresse_ip|default:"—" }}</dd>
+        <dt>User-Agent</dt><dd>{{ evenement.user_agent|default:"—" }}</dd>
+        <dt>Contexte</dt><dd><pre>{{ evenement.contexte }}</pre></dd>
+    </dl>
+</section>
+{% endblock %}
