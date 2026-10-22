@@ -50,6 +50,8 @@ def test_parametres_consultation_et_maj(admin_user):
             'mode_maintenance': True,
             'montant_virement_max': '5000.00',
             'montant_paiement_max': '2500.00',
+            'plafond_journalier': '8000.00',
+            'montant_alimentation_max': '3000.00',
             'delai_session_minutes': 30,
         },
     )

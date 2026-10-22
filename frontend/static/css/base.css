@@ -309,3 +309,69 @@ li.error {
     color: var(--muted);
     font-size: 0.8rem;
 }
+
+/* Espace client et authentification */
+.nav-form { margin: 0; }
+
+.nav-link {
+    border: 0;
+    background: transparent;
+    color: #d9e2ec;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+}
+
+.auth-card {
+    max-width: 460px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.75rem;
+}
+
+.solde-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    background: var(--header);
+    color: #fff;
+    padding: 1.5rem;
+    margin: 1rem 0 1.5rem;
+}
+
+.solde-libelle { color: #9fb3c8; font-size: 0.9rem; }
+.solde-montant { font-size: 2.2rem; font-weight: 700; }
+.solde-statut { color: #9fb3c8; font-size: 0.85rem; }
+
+.actions-rapides {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.actions-rapides .action {
+    background: var(--accent);
+    color: #fff;
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+}
+
+.actions-rapides .action.secondaire {
+    background: var(--surface);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+}
+
+.help { display: block; color: var(--muted); font-size: 0.85rem; }
+
+.cartes-test { font-size: 0.9rem; color: var(--muted); }
+.cartes-test code { color: var(--text); }
+
+html { background: var(--bg); }
+body { min-height: 100vh; }
+
+.brand, .nav a, .nav-link { white-space: nowrap; }
+.header-inner { gap: 1.5rem; }
+.nav { gap: 0.85rem; flex-wrap: wrap; justify-content: flex-end; font-size: 0.95rem; }
+.container { width: min(1120px, 92%); }

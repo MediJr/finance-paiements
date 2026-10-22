@@ -1,4 +1,5 @@
 from .beneficiaire_service import (
+    ajouter_beneficiaire_par_email,
     create_beneficiaire,
     desactiver_beneficiaire,
     get_beneficiaire_pour_proprietaire,
@@ -10,6 +11,7 @@ from .beneficiaire_service import (
 )
 
 __all__ = [
+    'ajouter_beneficiaire_par_email',
     'create_beneficiaire',
     'desactiver_beneficiaire',
     'get_beneficiaire_pour_proprietaire',

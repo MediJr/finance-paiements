@@ -209,3 +209,38 @@ def reactiver_beneficiaire(
         beneficiaire_id=beneficiaire_id,
         statut=Beneficiaire.Statut.ACTIF,
     )
+
+
+MESSAGE_DESTINATAIRE_INCONNU = (
+    'Aucun client actif ne correspond à cette adresse e-mail.'
+)
+
+
+def ajouter_beneficiaire_par_email(
+    *,
+    proprietaire: Utilisateur,
+    email: str,
+    alias: str = '',
+) -> Beneficiaire:
+    """
+    Ajoute un bénéficiaire désigné par son adresse e-mail exacte.
+
+    Point d'entrée des interfaces web et API : le client doit déjà connaître
+    l'adresse de son destinataire. Aucune liste de clients ni identifiant
+    séquentiel n'est exposé, ce qui empêche d'énumérer l'annuaire.
+    """
+    proprietaire = _require_proprietaire(proprietaire)
+    adresse = (email or '').strip()
+    if not adresse:
+        raise ValidationError('Adresse e-mail obligatoire.')
+    destinataire = Utilisateur.objects.filter(
+        email__iexact=adresse,
+        est_actif=True,
+    ).first()
+    if destinataire is None:
+        raise ValidationError(MESSAGE_DESTINATAIRE_INCONNU)
+    return create_beneficiaire(
+        proprietaire=proprietaire,
+        beneficiaire_id=destinataire.pk,
+        alias=alias,
+    )

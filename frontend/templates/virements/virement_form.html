@@ -21,7 +21,7 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        {% for field in form %}
+        {% for field in form.visible_fields %}
             <label>
                 {{ field.label }}
                 {{ field }}
@@ -30,6 +30,7 @@
                 {% endif %}
             </label>
         {% endfor %}
+        {% for field in form.hidden_fields %}{{ field }}{% endfor %}
         <div class="form-actions">
             <button type="submit">Exécuter le virement</button>
             <a href="{% url 'virements:virement-list' %}">Annuler</a>

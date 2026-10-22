@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+<section class="auth-card">
+    <h1>Connexion</h1>
+    <p class="lead">Accédez à votre portefeuille.</p>
+    {% include "accounts/_form.html" with bouton="Se connecter" %}
+    <p>Pas encore de compte ? <a href="{% url 'accounts:inscription' %}">Créer un compte</a></p>
+</section>
+{% endblock %}

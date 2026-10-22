@@ -48,7 +48,7 @@ def test_api_url_prefix_is_accessible():
     response = client.get('/api/')
     assert response.status_code == 200
     data = response.json()
-    assert data['application'] == '11-finance'
+    assert data['application'] == 'finance-paiements'
     assert data['status'] == 'ready'
 
 
@@ -63,7 +63,7 @@ def test_root_redirects_to_login_when_anonymous():
     client = Client()
     response = client.get('/')
     assert response.status_code in (301, 302)
-    assert '/admin/login' in response.url
+    assert '/comptes/connexion/' in response.url
 
 
 def test_auth_password_validators_configured():

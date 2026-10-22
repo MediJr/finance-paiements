@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Alimenter mon portefeuille{% endblock %}
+
+{% block content %}
+<section>
+    <p class="breadcrumb"><a href="{% url 'accounts:espace' %}">Mon espace</a> / Alimenter</p>
+    <h1>Alimenter mon portefeuille</h1>
+    {% if wallet %}
+    <p class="lead">Solde actuel : {{ wallet.solde }} {{ wallet.devise }}</p>
+    {% endif %}
+
+    {% include "accounts/_form.html" with bouton="Alimenter" %}
+
+    <p class="cartes-test">
+        Paiement par carte <strong>simulé</strong>, décidé par le serveur.
+        Carte de test acceptée : <code>{{ carte_acceptee }}</code> —
+        refusée : <code>{{ carte_refusee }}</code>.
+    </p>
+
+    {% if alimentations %}
+    <h2>Dernières alimentations</h2>
+    <table class="data-table">
+        <thead><tr><th>Date</th><th>Référence</th><th>Carte</th><th>Montant</th><th>Statut</th></tr></thead>
+        <tbody>
+            {% for a in alimentations %}
+            <tr>
+                <td>{{ a.date_creation|date:"d/m/Y H:i" }}</td>
+                <td>{{ a.reference }}</td>
+                <td>{{ a.carte_masquee }}</td>
+                <td>{{ a.montant }} {{ a.devise }}</td>
+                <td>{{ a.get_statut_display }}{% if a.motif_refus %} — {{ a.motif_refus }}{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</section>
+{% endblock %}

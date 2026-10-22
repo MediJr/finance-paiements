@@ -18,6 +18,8 @@ from accounts.models import Utilisateur
 from administration.services.securite_service import (
     assert_montant_paiement_max,
     assert_not_maintenance,
+    assert_plafond_journalier,
+    parse_cle_idempotence,
 )
 from beneficiaires.models import Beneficiaire
 from historique.models import HistoriqueOperation
@@ -44,14 +46,21 @@ def executer_paiement(
     beneficiaire_id: int,
     montant,
     motif: str = '',
+    cle_idempotence: str | None = None,
 ) -> Paiement:
-    """Exécute un paiement atomique vers un bénéficiaire actif."""
+    """
+    Exécute un paiement atomique vers un bénéficiaire actif.
+
+    Une clé d'idempotence déjà utilisée renvoie le paiement existant
+    (`est_rejeu=True`) sans nouveau débit.
+    """
     try:
-        paiement = _executer_paiement_atomic(
+        paiement, cree = _executer_paiement_atomic(
             payeur=payeur,
             beneficiaire_id=beneficiaire_id,
             montant=montant,
             motif=motif,
+            cle_idempotence=cle_idempotence,
         )
     except ValidationError as exc:
         enregistrer_evenement_durable(
@@ -67,6 +76,10 @@ def executer_paiement(
             },
         )
         raise
+
+    paiement.est_rejeu = not cree
+    if not cree:
+        return paiement
 
     user = getattr(payeur, 'user', None)
     ctx = {
@@ -98,11 +111,24 @@ def _executer_paiement_atomic(
     beneficiaire_id: int,
     montant,
     motif: str = '',
-) -> Paiement:
+    cle_idempotence: str | None = None,
+) -> tuple[Paiement, bool]:
     if payeur is None or payeur.pk is None:
         raise ValidationError('Payeur invalide.')
     if not payeur.est_actif:
         raise ValidationError('Le payeur doit être actif.')
+
+    cle = parse_cle_idempotence(cle_idempotence)
+    if cle is not None:
+        wallet_verrouille = Wallet.objects.select_for_update().filter(
+            utilisateur=payeur
+        ).first()
+        existant = Paiement.objects.filter(
+            wallet_payeur=wallet_verrouille,
+            cle_idempotence=cle,
+        ).first()
+        if existant is not None:
+            return existant, False
 
     montant_decimal = parse_montant(montant)
     assert_not_maintenance(operation='les paiements')
@@ -141,6 +167,8 @@ def _executer_paiement_atomic(
         label_source='payeur',
         label_destination='bénéficiaire',
     )
+    # Wallet verrouillé par transferer_fonds ; un refus annule toute la transaction.
+    assert_plafond_journalier(wallet_payeur, montant_decimal)
 
     reference = f'PAY-{uuid.uuid4().hex[:16].upper()}'
     motif_clean = (motif or '').strip()
@@ -154,6 +182,7 @@ def _executer_paiement_atomic(
         devise=wallet_payeur.devise,
         statut=Paiement.Statut.REUSSI,
         motif=motif_clean,
+        cle_idempotence=cle,
     )
 
     description = f'Paiement {reference}' + (f' — {motif_clean}' if motif_clean else '')
@@ -165,7 +194,7 @@ def _executer_paiement_atomic(
         reference_base=reference,
         description=description,
     )
-    return paiement
+    return paiement, True
 
 
 def list_paiements(*, utilisateur: Utilisateur):

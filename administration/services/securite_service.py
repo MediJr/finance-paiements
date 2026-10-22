@@ -10,6 +10,8 @@ from __future__ import annotations
 from decimal import Decimal
 
 from django.core.exceptions import ValidationError
+from django.db.models import Sum
+from django.utils import timezone
 
 from administration.models import ParametresApplication
 
@@ -47,6 +49,62 @@ def assert_montant_paiement_max(montant: Decimal) -> None:
         raise ValidationError(
             f'Le montant dépasse le plafond de paiement autorisé ({plafond}).'
         )
+
+
+def assert_montant_alimentation_max(montant: Decimal) -> None:
+    """Contrôle le plafond d'une alimentation de Wallet par carte."""
+    plafond = get_parametres_courants().montant_alimentation_max
+    if montant > plafond:
+        raise ValidationError(
+            f"Le montant dépasse le plafond d'alimentation autorisé ({plafond})."
+        )
+
+
+def total_sorties_du_jour(wallet) -> Decimal:
+    """Somme des virements et paiements émis par le Wallet depuis minuit (heure locale)."""
+    from paiements.models import Paiement
+    from virements.models import Virement
+
+    debut = timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0)
+    virements = Virement.objects.filter(
+        wallet_emetteur=wallet,
+        statut=Virement.Statut.REUSSI,
+        date_creation__gte=debut,
+    ).aggregate(total=Sum('montant'))['total']
+    paiements = Paiement.objects.filter(
+        wallet_payeur=wallet,
+        date_creation__gte=debut,
+    ).aggregate(total=Sum('montant'))['total']
+    return (virements or Decimal('0.00')) + (paiements or Decimal('0.00'))
+
+
+def assert_plafond_journalier(wallet, montant: Decimal) -> None:
+    """
+    Contrôle le cumul quotidien des sorties.
+
+    Sans ce contrôle, le plafond par opération se contourne en multipliant
+    les petites opérations. À appeler Wallet verrouillé (select_for_update).
+    """
+    plafond = get_parametres_courants().plafond_journalier
+    deja = total_sorties_du_jour(wallet)
+    if deja + montant > plafond:
+        disponible = max(plafond - deja, Decimal('0.00'))
+        raise ValidationError(
+            f"Plafond journalier atteint : {disponible} disponible aujourd'hui "
+            f'(plafond {plafond}).'
+        )
+
+
+def parse_cle_idempotence(valeur) -> str | None:
+    """Normalise une clé d'idempotence optionnelle (1 à 64 caractères imprimables)."""
+    if valeur is None:
+        return None
+    cle = str(valeur).strip()
+    if not cle:
+        return None
+    if len(cle) > 64 or not cle.isprintable():
+        raise ValidationError("Clé d'idempotence invalide (64 caractères maximum).")
+    return cle
 
 
 def parse_identifiant(valeur, *, champ: str = 'identifiant') -> int:

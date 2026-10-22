@@ -6,6 +6,7 @@ import logging
 
 from django.utils.deprecation import MiddlewareMixin
 
+from commun.http import adresse_ip_client as _client_ip
 from observabilite.models import Evenement
 from observabilite.services.journal_service import (
     TYPE_ERREUR_APPLICATION,
@@ -14,13 +15,6 @@ from observabilite.services.journal_service import (
 )
 
 logger = logging.getLogger(__name__)
-
-
-def _client_ip(request) -> str | None:
-    forwarded = request.META.get('HTTP_X_FORWARDED_FOR')
-    if forwarded:
-        return forwarded.split(',')[0].strip() or None
-    return request.META.get('REMOTE_ADDR') or None
 
 
 class ObservabiliteExceptionMiddleware(MiddlewareMixin):

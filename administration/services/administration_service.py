@@ -50,13 +50,20 @@ def update_parametres(
         'mode_maintenance',
         'montant_virement_max',
         'montant_paiement_max',
+        'plafond_journalier',
+        'montant_alimentation_max',
         'delai_session_minutes',
     }
     changes = []
     for key, value in kwargs.items():
         if key not in allowed or value is None:
             continue
-        if key in ('montant_virement_max', 'montant_paiement_max'):
+        if key in (
+            'montant_virement_max',
+            'montant_paiement_max',
+            'plafond_journalier',
+            'montant_alimentation_max',
+        ):
             try:
                 value = Decimal(str(value)).quantize(Decimal('0.01'))
             except (InvalidOperation, TypeError, ValueError) as exc:

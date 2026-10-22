@@ -14,5 +14,7 @@ class ParametresForm(forms.ModelForm):
             'mode_maintenance',
             'montant_virement_max',
             'montant_paiement_max',
+            'plafond_journalier',
+            'montant_alimentation_max',
             'delai_session_minutes',
         ]

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Mon espace{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Bonjour {{ utilisateur.prenom }}</h1>
+    {% if wallet %}
+    <div class="solde-card">
+        <span class="solde-libelle">Solde disponible</span>
+        <span class="solde-montant">{{ wallet.solde }} {{ wallet.devise }}</span>
+        <span class="solde-statut">Portefeuille #{{ wallet.pk }} — {{ wallet.get_statut_display }}</span>
+    </div>
+    {% endif %}
+
+    <div class="actions-rapides">
+        <a class="action" href="{% url 'wallets:alimentation' %}">Alimenter par carte</a>
+        <a class="action" href="{% url 'virements:virement-create' %}">Faire un virement</a>
+        <a class="action" href="{% url 'paiements:paiement-create' %}">Payer</a>
+        <a class="action secondaire" href="{% url 'beneficiaires:beneficiaire-create' %}">Ajouter un bénéficiaire</a>
+    </div>
+
+    <h2>Dernières opérations</h2>
+    {% if operations %}
+    <table class="data-table">
+        <thead>
+            <tr><th>Date</th><th>Type</th><th>Description</th><th>Montant</th><th>Statut</th></tr>
+        </thead>
+        <tbody>
+            {% for op in operations %}
+            <tr>
+                <td>{{ op.date_creation|date:"d/m/Y H:i" }}</td>
+                <td>{{ op.get_type_operation_display }}</td>
+                <td><a href="{% url 'historique:historique-detail' op.pk %}">{{ op.description }}</a></td>
+                <td>{{ op.montant|default:"—" }} {{ op.devise }}</td>
+                <td>{{ op.get_statut_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><a href="{% url 'historique:historique-list' %}">Tout l'historique</a></p>
+    {% else %}
+    <p>Aucune opération pour l'instant. Commencez par <a href="{% url 'wallets:alimentation' %}">alimenter votre portefeuille</a>.</p>
+    {% endif %}
+</section>
+{% endblock %}

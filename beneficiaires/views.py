@@ -8,7 +8,7 @@ from django.views.decorators.http import require_http_methods
 
 from beneficiaires.forms import BeneficiaireCreateForm, BeneficiaireUpdateForm
 from beneficiaires.services.beneficiaire_service import (
-    create_beneficiaire,
+    ajouter_beneficiaire_par_email,
     get_beneficiaire_pour_proprietaire,
     get_utilisateur_connecte,
     list_beneficiaires,
@@ -32,7 +32,7 @@ def beneficiaire_list(request):
         proprietaire = get_utilisateur_connecte(request.user)
     except PermissionDenied:
         messages.error(request, 'Profil métier introuvable.')
-        return redirect('admin:login')
+        return redirect('accounts:connexion')
 
     statut = request.GET.get('statut') or None
     beneficiaires = list_beneficiaires(proprietaire=proprietaire, statut=statut)
@@ -66,12 +66,12 @@ def beneficiaire_detail(request, pk):
 def beneficiaire_create(request):
     """Création d'un bénéficiaire."""
     proprietaire = get_utilisateur_connecte(request.user)
-    form = BeneficiaireCreateForm(request.POST or None, proprietaire=proprietaire)
+    form = BeneficiaireCreateForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         try:
-            beneficiaire = create_beneficiaire(
+            beneficiaire = ajouter_beneficiaire_par_email(
                 proprietaire=proprietaire,
-                beneficiaire_id=form.cleaned_data['utilisateur_beneficiaire'].pk,
+                email=form.cleaned_data['email'],
                 alias=form.cleaned_data.get('alias', ''),
             )
         except ValidationError as exc:

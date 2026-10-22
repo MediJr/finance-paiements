@@ -6,9 +6,10 @@ from django import forms
 
 from accounts.models import Utilisateur
 from beneficiaires.services import list_beneficiaires_selectionnables
+from commun.formulaires import CleIdempotenceMixin
 
 
-class VirementCreateForm(forms.Form):
+class VirementCreateForm(CleIdempotenceMixin, forms.Form):
     beneficiaire = forms.ModelChoiceField(
         queryset=None,
         label='Bénéficiaire',

@@ -1,4 +1,4 @@
--- Initialisation PostgreSQL — Application Finance (11-finance)
+-- Initialisation PostgreSQL — Finance Paiements
 -- La base métier est créée automatiquement via POSTGRES_DB (Docker).
 -- Aucune table métier au Sprint 0 (migrations Django système uniquement).
 

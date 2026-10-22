@@ -57,6 +57,13 @@ class Paiement(models.Model):
         default='',
         verbose_name='motif',
     )
+    cle_idempotence = models.CharField(
+        max_length=64,
+        null=True,
+        blank=True,
+        verbose_name="clé d'idempotence",
+        help_text='Fournie par le client : une même clé ne produit qu’un seul paiement.',
+    )
     date_creation = models.DateTimeField(auto_now_add=True, verbose_name='date de création')
     date_mise_a_jour = models.DateTimeField(auto_now=True, verbose_name='date de mise à jour')
 
@@ -64,6 +71,13 @@ class Paiement(models.Model):
         verbose_name = 'paiement'
         verbose_name_plural = 'paiements'
         ordering = ['-date_creation']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['wallet_payeur', 'cle_idempotence'],
+                condition=models.Q(cle_idempotence__isnull=False),
+                name='paiement_cle_idempotence_unique',
+            ),
+        ]
 
     def __str__(self):
         return f'{self.reference} — {self.montant} {self.devise}'

@@ -4,27 +4,35 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Finance{% endblock %} — 11-finance</title>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <title>{% block title %}Accueil{% endblock %} — Finance Paiements</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}?v=1.1">
 </head>
 <body>
     <header class="site-header">
         <div class="container header-inner">
-            <a class="brand" href="{% url 'accounts:utilisateur-list' %}">11-finance</a>
+            <a class="brand" href="{% url 'accueil' %}">Finance Paiements</a>
             <nav class="nav">
                 {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                    <a href="{% url 'administration:index' %}">Administration</a>
                     <a href="{% url 'accounts:utilisateur-list' %}">Utilisateurs</a>
+                    {% else %}
+                    <a href="{% url 'accounts:espace' %}">Mon espace</a>
+                    <a href="{% url 'wallets:alimentation' %}">Alimenter</a>
                     <a href="{% url 'beneficiaires:beneficiaire-list' %}">Bénéficiaires</a>
                     <a href="{% url 'virements:virement-list' %}">Virements</a>
                     <a href="{% url 'paiements:paiement-list' %}">Paiements</a>
                     <a href="{% url 'paiements:remboursement-list' %}">Remboursements</a>
                     <a href="{% url 'historique:historique-list' %}">Historique</a>
-                    {% if user.is_staff %}
-                    <a href="{% url 'administration:index' %}">Administration</a>
                     {% endif %}
                     <span class="nav-user">{{ user.username }}</span>
+                    <form method="post" action="{% url 'accounts:deconnexion' %}" class="nav-form">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link">Déconnexion</button>
+                    </form>
                 {% else %}
-                    <a href="{% url 'admin:login' %}">Connexion</a>
+                    <a href="{% url 'accounts:connexion' %}">Connexion</a>
+                    <a href="{% url 'accounts:inscription' %}">Inscription</a>
                 {% endif %}
             </nav>
         </div>

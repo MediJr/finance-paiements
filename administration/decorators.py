@@ -18,7 +18,7 @@ def administrateur_required(view_func):
             require_administrateur(request.user)
         except PermissionDenied:
             if not request.user.is_authenticated:
-                return redirect('admin:login')
+                return redirect('accounts:connexion')
             messages.error(request, 'Accès réservé aux administrateurs.')
             return redirect('accounts:utilisateur-list')
         return view_func(request, *args, **kwargs)

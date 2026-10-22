@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block content %}
+<section class="auth-card">
+    <h1>Créer un compte</h1>
+    <p class="lead">Un portefeuille en euros est ouvert automatiquement, avec un solde de 0 €.</p>
+    {% include "accounts/_form.html" with bouton="Créer mon compte" %}
+    <p>Déjà inscrit ? <a href="{% url 'accounts:connexion' %}">Se connecter</a></p>
+</section>
+{% endblock %}

@@ -1,95 +1,47 @@
 {% extends "base.html" %}
-
 {% block title %}Journal administration{% endblock %}
-
 {% block content %}
-
 <section>
-
     <h1>Journal d'administration</h1>
-
     <p class="lead">Traçabilité simple des actions administrateur (Security by Design).</p>
-
     <form method="get" class="filters">
-
         <label>
-
             Action
-
             <select name="action">
-
                 <option value="">Toutes</option>
-
                 {% for value, label in action_choices %}
-
                 <option value="{{ value }}" {% if filtre_action == value %}selected{% endif %}>{{ label }}</option>
-
                 {% endfor %}
-
             </select>
-
         </label>
-
         <button type="submit">Filtrer</button>
-
     </form>
-
     <table>
-
         <thead>
-
             <tr>
-
                 <th>Date</th>
-
                 <th>Administrateur</th>
-
                 <th>Action</th>
-
                 <th>Cible</th>
-
                 <th>Détails</th>
-
                 <th>IP</th>
-
             </tr>
-
         </thead>
-
         <tbody>
-
             {% for e in entrees %}
-
             <tr>
-
                 <td>{{ e.date_creation }}</td>
-
                 <td>{{ e.administrateur.username }}</td>
-
                 <td>{{ e.get_action_display }}</td>
-
                 <td>{% if e.cible_type %}{{ e.cible_type }}{% if e.cible_id %} #{{ e.cible_id }}{% endif %}{% else %}—{% endif %}</td>
-
                 <td>{{ e.details }}</td>
-
                 <td>{{ e.adresse_ip|default:"—" }}</td>
-
             </tr>
-
             {% empty %}
-
             <tr><td colspan="6">Aucune entrée.</td></tr>
-
             {% endfor %}
-
         </tbody>
-
     </table>
-
     <p><a href="{% url 'administration:index' %}">Retour administration</a></p>
-
 </section>
-
 {% endblock %}
-
-

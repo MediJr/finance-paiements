@@ -1,9 +1,9 @@
-# Dépendances Python — Application Finance (paiements numériques)
-# Sprint 0 — Initialisation
+# Dépendances d'exécution — Finance Paiements (portefeuille et paiements numériques)
+# Développement et tests : pip install -r requirements-dev.txt
 
 Django==6.0.7
 djangorestframework==3.17.1
 psycopg2-binary==2.9.12
-pytest==9.1.1
-pytest-django==4.12.0
 python-dotenv==1.2.2
+gunicorn==23.0.0
+whitenoise==6.9.0

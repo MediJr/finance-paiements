@@ -96,7 +96,7 @@ def exporter(
     )
     generated_at = now()
     meta = {
-        'application': '11-finance',
+        'application': 'finance-paiements',
         'version': EXPORT_VERSION,
         'type': type_export,
         'format': format_export,
@@ -382,5 +382,27 @@ def _to_csv(*, rows: list[dict]) -> str:
                 flat[key] = ''
             else:
                 flat[key] = value
+            flat[key] = neutraliser_formule(flat[key])
         writer.writerow(flat)
     return buffer.getvalue()
+
+
+# Caractères qui font interpréter une cellule comme une formule par un tableur.
+_DEBUTS_FORMULE = ('=', '+', '-', '@', '\t', '\r')
+
+
+def neutraliser_formule(valeur):
+    """
+    Protège contre l'injection de formules CSV (Excel, LibreOffice).
+
+    Un motif de virement saisi par un client comme `=HYPERLINK(...)` serait
+    sinon exécuté à l'ouverture de l'export par un administrateur. Les nombres
+    (y compris négatifs) restent intacts.
+    """
+    if not isinstance(valeur, str) or not valeur.startswith(_DEBUTS_FORMULE):
+        return valeur
+    try:
+        float(valeur)
+        return valeur
+    except ValueError:
+        return "'" + valeur

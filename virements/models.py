@@ -57,6 +57,13 @@ class Virement(models.Model):
         default='',
         verbose_name='motif',
     )
+    cle_idempotence = models.CharField(
+        max_length=64,
+        null=True,
+        blank=True,
+        verbose_name="clé d'idempotence",
+        help_text='Fournie par le client : une même clé ne produit qu’un seul virement.',
+    )
     date_creation = models.DateTimeField(
         auto_now_add=True,
         verbose_name='date de création',
@@ -70,6 +77,13 @@ class Virement(models.Model):
         verbose_name = 'virement'
         verbose_name_plural = 'virements'
         ordering = ['-date_creation']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['wallet_emetteur', 'cle_idempotence'],
+                condition=models.Q(cle_idempotence__isnull=False),
+                name='virement_cle_idempotence_unique',
+            ),
+        ]
 
     def __str__(self):
         return f'{self.reference} — {self.montant} {self.devise}'

@@ -17,6 +17,8 @@ from accounts.models import Utilisateur
 from administration.services.securite_service import (
     assert_montant_virement_max,
     assert_not_maintenance,
+    assert_plafond_journalier,
+    parse_cle_idempotence,
 )
 from beneficiaires.models import Beneficiaire
 from historique.models import HistoriqueOperation
@@ -43,16 +45,22 @@ def executer_virement(
     beneficiaire_id: int,
     montant,
     motif: str = '',
+    cle_idempotence: str | None = None,
 ) -> Virement:
     """
     Exécute un virement atomique vers un bénéficiaire actif du propriétaire.
+
+    Avec une clé d'idempotence déjà utilisée par l'émetteur, le virement
+    existant est renvoyé (`est_rejeu=True`) sans nouveau débit : un double clic
+    ou une requête renvoyée après une coupure réseau ne débite jamais deux fois.
     """
     try:
-        virement = _executer_virement_atomic(
+        virement, cree = _executer_virement_atomic(
             emetteur=emetteur,
             beneficiaire_id=beneficiaire_id,
             montant=montant,
             motif=motif,
+            cle_idempotence=cle_idempotence,
         )
     except ValidationError as exc:
         enregistrer_evenement_durable(
@@ -68,6 +76,10 @@ def executer_virement(
             },
         )
         raise
+
+    virement.est_rejeu = not cree
+    if not cree:
+        return virement
 
     user = getattr(emetteur, 'user', None)
     ctx = {
@@ -99,11 +111,26 @@ def _executer_virement_atomic(
     beneficiaire_id: int,
     montant,
     motif: str = '',
-) -> Virement:
+    cle_idempotence: str | None = None,
+) -> tuple[Virement, bool]:
     if emetteur is None or emetteur.pk is None:
         raise ValidationError('Émetteur invalide.')
     if not emetteur.est_actif:
         raise ValidationError('L\'émetteur doit être actif.')
+
+    cle = parse_cle_idempotence(cle_idempotence)
+    if cle is not None:
+        # Verrou sur le Wallet émetteur : deux requêtes simultanées portant la
+        # même clé sont sérialisées, la seconde retrouve le virement de la première.
+        wallet_verrouille = Wallet.objects.select_for_update().filter(
+            utilisateur=emetteur
+        ).first()
+        existant = Virement.objects.filter(
+            wallet_emetteur=wallet_verrouille,
+            cle_idempotence=cle,
+        ).first()
+        if existant is not None:
+            return existant, False
 
     montant_decimal = parse_montant(montant)
     assert_not_maintenance(operation='les virements')
@@ -144,6 +171,8 @@ def _executer_virement_atomic(
         label_source='émetteur',
         label_destination='bénéficiaire',
     )
+    # Wallet verrouillé par transferer_fonds ; un refus annule toute la transaction.
+    assert_plafond_journalier(wallet_emetteur, montant_decimal)
 
     reference = f'VIR-{uuid.uuid4().hex[:16].upper()}'
     motif_clean = (motif or '').strip()
@@ -156,6 +185,7 @@ def _executer_virement_atomic(
         devise=wallet_emetteur.devise,
         statut=Virement.Statut.REUSSI,
         motif=motif_clean,
+        cle_idempotence=cle,
     )
 
     description = f'Virement {reference}' + (f' — {motif_clean}' if motif_clean else '')
@@ -168,7 +198,7 @@ def _executer_virement_atomic(
         description=description,
     )
 
-    return virement
+    return virement, True
 
 
 def list_virements(*, utilisateur: Utilisateur):

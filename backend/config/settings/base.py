@@ -1,5 +1,5 @@
 """
-Configuration Django de base pour l'application Finance (11-finance).
+Configuration Django de base — Finance Paiements.
 
 Ce module centralise les paramètres communs à tous les environnements.
 Aucune logique métier n'est définie ici (Sprint 0).
@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 # Répertoire backend/ (contient manage.py)
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Répertoire racine de l'application 11-finance/
+# Répertoire racine du projet
 APP_ROOT = BASE_DIR.parent
 
 # Permet l'import des modules situés à la racine de l'application (api/, etc.)
@@ -28,7 +28,8 @@ SECRET_KEY = os.getenv(
     'django-insecure-dev-only-change-in-production',
 )
 
-DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() in ('true', '1', 'yes')
+# Sûr par défaut : le mode debug doit être activé explicitement (development.py).
+DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() in ('true', '1', 'yes')
 
 ALLOWED_HOSTS = [
     host.strip()
@@ -129,10 +130,43 @@ MEDIA_ROOT = APP_ROOT / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Authentification Django (User standard — Sprint 0)
-LOGIN_URL = '/admin/login/'
-LOGIN_REDIRECT_URL = '/utilisateurs/'
-LOGOUT_REDIRECT_URL = '/admin/login/'
+# Authentification : espace client dédié (le site /admin/ reste réservé au personnel)
+LOGIN_URL = '/comptes/connexion/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/comptes/connexion/'
+
+
+def _env_int(nom: str, defaut: int) -> int:
+    return int(os.getenv(nom, str(defaut)))
+
+
+# Sécurité — protection contre la force brute sur la connexion
+CONNEXION_MAX_ECHECS = _env_int('CONNEXION_MAX_ECHECS', 5)
+CONNEXION_DUREE_BLOCAGE_MINUTES = _env_int('CONNEXION_DUREE_BLOCAGE_MINUTES', 15)
+
+# N'activer que derrière un reverse proxy de confiance (sinon l'IP est falsifiable).
+TRUST_X_FORWARDED_FOR = os.getenv('TRUST_X_FORWARDED_FOR', 'False').lower() in (
+    'true',
+    '1',
+    'yes',
+)
+
+# Cache (compteurs de tentatives de connexion). Utiliser Redis/Memcached
+# en production multi-processus.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'finance',
+    },
+}
+
+# En-têtes de sécurité valables dans tous les environnements
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'same-origin'
+X_FRAME_OPTIONS = 'DENY'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

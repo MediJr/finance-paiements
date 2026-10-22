@@ -28,7 +28,7 @@ def virement_list(request):
         utilisateur = get_utilisateur_connecte(request.user)
     except PermissionDenied:
         messages.error(request, 'Profil métier introuvable.')
-        return redirect('admin:login')
+        return redirect('accounts:connexion')
 
     virements = list_virements(utilisateur=utilisateur)
     return render(
@@ -66,6 +66,7 @@ def virement_create(request):
                 beneficiaire_id=form.cleaned_data['beneficiaire'].pk,
                 montant=form.cleaned_data['montant'],
                 motif=form.cleaned_data.get('motif', ''),
+                cle_idempotence=form.cleaned_data.get('cle_idempotence'),
             )
         except ValidationError as exc:
             for message in _messages_from_validation(exc):

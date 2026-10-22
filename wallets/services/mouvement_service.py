@@ -16,14 +16,25 @@ from historique.services import create_historique_operation
 from wallets.models import Wallet
 
 
+# Capacité des champs `DecimalField(max_digits=14, decimal_places=2)`.
+MONTANT_MAXIMUM_TECHNIQUE = Decimal('999999999999.99')
+
+
 def parse_montant(montant) -> Decimal:
     """Parse et valide un montant strictement positif."""
     try:
         value = Decimal(str(montant))
     except (InvalidOperation, TypeError, ValueError) as exc:
         raise ValidationError('Montant invalide.') from exc
+    if not value.is_finite():
+        raise ValidationError('Montant invalide.')
     if value <= Decimal('0'):
         raise ValidationError('Le montant doit être strictement positif.')
+    if value > MONTANT_MAXIMUM_TECHNIQUE:
+        raise ValidationError('Montant trop élevé.')
+    # Refus explicite plutôt qu'arrondi silencieux (0.001 deviendrait 0.00).
+    if value != value.quantize(Decimal('0.01')):
+        raise ValidationError('Le montant ne peut pas avoir plus de deux décimales.')
     return value.quantize(Decimal('0.01'))
 
 

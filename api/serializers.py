@@ -140,7 +140,8 @@ class BeneficiaireSerializer(serializers.ModelSerializer):
 class BeneficiaireCreateSerializer(serializers.Serializer):
     """Payload de création d'un bénéficiaire."""
 
-    utilisateur_beneficiaire_id = serializers.IntegerField(min_value=1)
+    # Destinataire désigné par son e-mail exact (pas d'identifiant énumérable).
+    email = serializers.EmailField()
     alias = serializers.CharField(max_length=150, required=False, allow_blank=True)
 
 
@@ -282,6 +283,10 @@ class ParametresSerializer(serializers.Serializer):
     mode_maintenance = serializers.BooleanField()
     montant_virement_max = serializers.DecimalField(max_digits=14, decimal_places=2)
     montant_paiement_max = serializers.DecimalField(max_digits=14, decimal_places=2)
+    plafond_journalier = serializers.DecimalField(max_digits=14, decimal_places=2, required=False)
+    montant_alimentation_max = serializers.DecimalField(
+        max_digits=14, decimal_places=2, required=False
+    )
     delai_session_minutes = serializers.IntegerField(min_value=1)
     date_mise_a_jour = serializers.DateTimeField(read_only=True)
 

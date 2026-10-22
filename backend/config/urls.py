@@ -3,19 +3,12 @@ Configuration des URLs principales du projet Django.
 """
 
 from django.contrib import admin
-from django.shortcuts import redirect
 from django.urls import include, path
 
-
-def root_redirect(request):
-    """Redirige la racine vers la liste des utilisateurs."""
-    if request.user.is_authenticated:
-        return redirect('accounts:utilisateur-list')
-    return redirect('admin:login')
-
+from accounts.views_auth import accueil
 
 urlpatterns = [
-    path('', root_redirect, name='root'),
+    path('', accueil, name='accueil'),
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),
     path('', include('wallets.urls')),

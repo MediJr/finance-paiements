@@ -22,6 +22,13 @@ from .views import (
     WalletDetailAPIView,
     WalletHistoriqueAPIView,
 )
+from .views_client import (
+    AlimentationListCreateAPIView,
+    ConnexionAPIView,
+    CsrfTokenAPIView,
+    DeconnexionAPIView,
+    InscriptionAPIView,
+)
 from .views_admin import (
     AdminDashboardAPIView,
     AdminEvenementDetailAPIView,
@@ -39,6 +46,11 @@ app_name = 'api'
 
 urlpatterns = [
     path('', ApiRootView.as_view(), name='root'),
+    path('auth/csrf/', CsrfTokenAPIView.as_view(), name='auth-csrf'),
+    path('auth/inscription/', InscriptionAPIView.as_view(), name='auth-inscription'),
+    path('auth/connexion/', ConnexionAPIView.as_view(), name='auth-connexion'),
+    path('auth/deconnexion/', DeconnexionAPIView.as_view(), name='auth-deconnexion'),
+    path('alimentations/', AlimentationListCreateAPIView.as_view(), name='alimentation-list'),
     path('utilisateurs/', UtilisateurListAPIView.as_view(), name='utilisateur-list'),
     path(
         'utilisateurs/<int:pk>/',

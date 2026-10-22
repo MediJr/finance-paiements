@@ -16,7 +16,7 @@ class ParametresApplication(models.Model):
 
     nom_application = models.CharField(
         max_length=200,
-        default='11-finance',
+        default='Finance Paiements',
         verbose_name='nom de l\'application',
     )
     devise_par_defaut = models.CharField(
@@ -41,6 +41,20 @@ class ParametresApplication(models.Model):
         default=Decimal('10000.00'),
         validators=[MinValueValidator(Decimal('0.01'))],
         verbose_name='montant maximum d\'un paiement',
+    )
+    plafond_journalier = models.DecimalField(
+        max_digits=14,
+        decimal_places=2,
+        default=Decimal('20000.00'),
+        validators=[MinValueValidator(Decimal('0.01'))],
+        verbose_name='plafond journalier des sorties (virements + paiements)',
+    )
+    montant_alimentation_max = models.DecimalField(
+        max_digits=14,
+        decimal_places=2,
+        default=Decimal('5000.00'),
+        validators=[MinValueValidator(Decimal('0.01'))],
+        verbose_name="montant maximum d'une alimentation par carte",
     )
     delai_session_minutes = models.PositiveIntegerField(
         default=60,

@@ -6,11 +6,12 @@ from django import forms
 
 from accounts.models import Utilisateur
 from beneficiaires.services import list_beneficiaires_selectionnables
+from commun.formulaires import CleIdempotenceMixin
 from paiements.models import Paiement
 from paiements.services import list_paiements
 
 
-class PaiementCreateForm(forms.Form):
+class PaiementCreateForm(CleIdempotenceMixin, forms.Form):
     beneficiaire = forms.ModelChoiceField(
         queryset=None,
         label='Bénéficiaire',

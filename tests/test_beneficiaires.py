@@ -120,7 +120,7 @@ def test_api_beneficiaires_crud(utilisateur, autre_utilisateur):
     create_resp = client.post(
         '/api/beneficiaires/',
         data=json.dumps({
-            'utilisateur_beneficiaire_id': autre_utilisateur.pk,
+            'email': autre_utilisateur.email,
             'alias': 'API Bob',
         }),
         content_type='application/json',
@@ -164,10 +164,11 @@ def test_api_controle_acces(utilisateur, autre_utilisateur, beneficiaire):
 
     self_add = client.post(
         '/api/beneficiaires/',
-        data=json.dumps({'utilisateur_beneficiaire_id': autre_utilisateur.pk}),
+        data=json.dumps({'email': autre_utilisateur.email}),
         content_type='application/json',
     )
     assert self_add.status_code == 400
+    assert 'lui-même' in self_add.content.decode()
 
 
 @pytest.mark.django_db
@@ -177,10 +178,11 @@ def test_api_refus_auto_ajout(utilisateur):
     assert client.login(username='alice', password='MotDePasseFort123!')
     response = client.post(
         '/api/beneficiaires/',
-        data=json.dumps({'utilisateur_beneficiaire_id': utilisateur.pk}),
+        data=json.dumps({'email': utilisateur.email}),
         content_type='application/json',
     )
     assert response.status_code == 400
+    assert 'lui-même' in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -214,7 +216,7 @@ def test_vues_web_beneficiaires(utilisateur, autre_utilisateur, beneficiaire):
     created = client.post(
         reverse('beneficiaires:beneficiaire-create'),
         data={
-            'utilisateur_beneficiaire': carol.pk,
+            'email': carol.email,
             'alias': 'Carol',
         },
     )

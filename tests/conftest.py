@@ -1,5 +1,5 @@
 """
-Configuration pytest pour l'application Finance (11-finance).
+Configuration pytest — Finance Paiements.
 """
 
 import sys
@@ -19,6 +19,16 @@ if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
 User = get_user_model()
+
+
+@pytest.fixture(autouse=True)
+def _vider_cache():
+    """Isole les compteurs de tentatives de connexion entre les tests."""
+    from django.core.cache import cache
+
+    cache.clear()
+    yield
+    cache.clear()
 
 
 @pytest.fixture
