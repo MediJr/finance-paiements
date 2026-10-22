@@ -1,31 +1,24 @@
 # Docker
 
-Orchestration locale de l'application Finance.
+| Fichier | Usage |
+|---------|-------|
+| `Dockerfile` | Image Python 3.12, utilisateur non-root, Gunicorn par défaut |
+| `docker-compose.yml` | Développement : PostgreSQL + `runserver` avec rechargement du code |
+| `docker-compose.prod.yml` | Production : PostgreSQL + Gunicorn + WhiteNoise |
 
-## Services
-
-| Service | Conteneur | Port hôte |
-|---------|-----------|-----------|
-| PostgreSQL 16 | `finance-db` | `5433` |
-| Django | `finance-web` | `8001` |
-
-Les ports `5433` et `8001` évitent les conflits avec d'autres applications du laboratoire.
-
-## Démarrage
+## Développement
 
 ```bash
-# Depuis applications/11-finance/
-copy .env.example .env   # une seule fois
-
+copy .env.example .env      # à la racine du projet (cp sous Linux / macOS)
 cd docker
-docker compose up -d db
-docker compose up -d web
+docker compose up --build
 ```
 
-## Vérifications
+| Service | Port hôte |
+|---------|-----------|
+| `web` (Django) | 8001 |
+| `db` (PostgreSQL 16) | 5433 |
 
-```bash
-docker compose config
-docker compose ps
-docker compose exec db pg_isready -U finance -d finance
-```
+## Production
+
+Voir [docs/installation.md](../docs/installation.md#option-3--production-docker-gunicorn).

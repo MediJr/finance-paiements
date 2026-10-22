@@ -1,10 +1,54 @@
-# Changelog — Finance (11-finance)
+# Changelog — Finance Paiements
 
 Toutes les modifications notables de ce projet sont documentées dans ce fichier.
 
-Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
+Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
+versionnement [sémantique](https://semver.org/lang/fr/).
 
-## [Non publié]
+## [1.1.0] — Prototype 5 / Sprint 11 — Audit de sécurité et durcissement — 22 octobre 2026
+
+### Sécurité
+
+- **F1** Bénéficiaire ajouté par e-mail exact : l'API n'accepte plus d'identifiant
+  séquentiel et le formulaire web ne liste plus les clients (annuaire non énumérable).
+- **F4** Clés d'idempotence sur virements, paiements et alimentations (champ caché,
+  en-tête `Idempotency-Key`, contrainte d'unicité) : plus de double débit.
+- **F5** Plafond journalier cumulé des sorties (`plafond_journalier`).
+- **F6** Montants : 2 décimales maximum, valeurs finies, borne technique.
+- **F7** Neutralisation des formules dans les exports CSV.
+- **F8** Blocage temporaire après échecs de connexion ; CSRF imposé à l'API
+  d'authentification ; redirection `next` validée ; déconnexion en POST.
+- **F9** `X-Forwarded-For` ignoré sauf `TRUST_X_FORWARDED_FOR=True`.
+- **F10** `DEBUG=False` par défaut, `settings/production.py` (HTTPS, HSTS, cookies
+  sécurisés, clé secrète obligatoire), en-têtes de sécurité, Dockerfile non-root,
+  Gunicorn, WhiteNoise.
+
+### Ajouté
+
+- **F2** Espace client : inscription, connexion, déconnexion (web + API), page
+  « Mon espace » ; le site `/admin/` reste réservé au personnel.
+- **F3** Alimentation du portefeuille par carte via une passerelle simulée côté
+  serveur (modèle `Alimentation`, paramètre `montant_alimentation_max`).
+- `config.settings.local` (SQLite), `config.settings.test_postgres`, commande
+  `creer_comptes_demo`, `docker-compose.prod.yml`.
+- Intégration continue GitHub Actions (tests, couverture ≥ 80 %, migrations,
+  `check --deploy`, suite complète sur PostgreSQL).
+- 48 tests (`tests/test_durcissement.py`) — **169** au total, couverture 86 %.
+- Documentation : cahier des charges, cycle de vie, backlog, architecture,
+  sécurité, stratégie de test, alimentation, guide de démonstration, rapport LaTeX.
+
+### Modifié
+
+- **F11** Produit renommé « Finance Paiements » ; fichiers source en double
+  interligne normalisés.
+
+### Migrations
+
+- `administration.0003_plafonds_journalier_alimentation`
+- `wallets.0002_alimentation`
+- `virements.0002_cle_idempotence`, `paiements.0002_cle_idempotence`
+
+## [1.0.0] — Prototypes 1 à 4 / Sprints 0 à 10 — août 2026
 
 ### Prototype 4 — Sprint 10 — Export des données (clôture)
 
@@ -13,7 +57,7 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/)
 - Pages `/administration/exports/` + téléchargement
 - API `GET /api/administration/exports/`
 - 121 tests pytest
-- **Clôture de l'application 11-finance**
+- Clôture de la feuille de route initiale
 
 ### Prototype 4 — Sprint 9 — Observabilité
 

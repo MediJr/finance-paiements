@@ -46,3 +46,9 @@ Historique : type `remboursement` (OUT/IN).
 
 - `POST/GET /api/paiements/`, `GET /api/paiements/<id>/`
 - `POST/GET /api/remboursements/`, `GET /api/remboursements/<id>/`
+
+## Idempotence et plafond journalier (sprint 11)
+
+Les paiements suivent les mêmes règles que les virements : clé d'idempotence
+(champ caché ou en-tête `Idempotency-Key`) et plafond journalier cumulé des
+sorties. Voir [virements.md](virements.md#idempotence-et-plafond-journalier-sprint-11).

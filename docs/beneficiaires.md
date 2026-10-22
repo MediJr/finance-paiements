@@ -52,3 +52,15 @@ Contrainte d'unicité : `(proprietaire, utilisateur_beneficiaire)`.
 - `GET /api/beneficiaires/<id>/`
 - `PUT|PATCH /api/beneficiaires/<id>/`
 - `DELETE /api/beneficiaires/<id>/` — désactivation logique
+
+## Ajout par adresse e-mail (sprint 11)
+
+Les interfaces web et API désignent le destinataire par son **e-mail exact**
+(`ajouter_beneficiaire_par_email`). Avant le sprint 11, l'API acceptait un
+identifiant séquentiel et renvoyait le nom et l'e-mail du client ciblé, et le
+formulaire web listait tous les clients : l'annuaire complet était énumérable
+(faille F1, voir [securite.md](securite.md)).
+
+- `POST /api/beneficiaires/` — `{ "email": "bob@example.com", "alias": "Bob" }`
+- adresse inconnue ou compte inactif : message générique
+  « Aucun client actif ne correspond à cette adresse e-mail ».

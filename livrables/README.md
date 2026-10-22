@@ -1,6 +1,6 @@
 # Livrables
 
-Livrables de sprint pour l'application Finance (`11-finance`).
+Traces du développement itératif : un rapport par sprint, puis les audits. Les rapports sont conservés tels qu'écrits à la fin de chaque sprint.
 
 | Sprint | Dossier | Contenu |
 |--------|---------|---------|
@@ -15,3 +15,11 @@ Livrables de sprint pour l'application Finance (`11-finance`).
 | Sprint 8 | [Sprint-08/](Sprint-08/) | Tableaux de bord, statistiques et rapports |
 | Sprint 9 | [Sprint-09/](Sprint-09/) | Observabilité |
 | Sprint 10 | [Sprint-10/](Sprint-10/) | Export des données (clôture) |
+| Sprint 11 | [Sprint-11/](Sprint-11/) | Audit de sécurité et durcissement |
+
+## Audits
+
+| Document | Nature |
+|----------|--------|
+| [Audit/audit-technique.md](Audit/audit-technique.md) | Audit technique après le sprint 6 — **historique** (ses constats ont été traités au sprint 7) |
+| [../docs/securite.md](../docs/securite.md) | Audit de sécurité du sprint 11 (11 défauts corrigés) |

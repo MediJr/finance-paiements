@@ -55,3 +55,14 @@ Toute modification de solde passe exclusivement par ce service.
 - `POST /api/virements/` — `{ beneficiaire_id, montant, motif? }`
 - `GET /api/virements/`
 - `GET /api/virements/<id>/`
+
+## Idempotence et plafond journalier (sprint 11)
+
+- **Clé d'idempotence** : le formulaire web porte une clé cachée générée à
+  l'affichage ; l'API lit l'en-tête `Idempotency-Key`. Une même clé ne produit
+  qu'un seul virement (contrainte d'unicité `(wallet_emetteur, cle_idempotence)`) ;
+  le rejeu renvoie le virement existant avec le code `200`.
+- **Plafond journalier** : la somme des virements et paiements émis depuis
+  minuit ne peut dépasser `plafond_journalier` (20 000 EUR par défaut). Le
+  contrôle est fait portefeuille verrouillé, dans la transaction.
+- **Montant** : 2 décimales maximum ; `0.001` est refusé (pas d'arrondi silencieux).

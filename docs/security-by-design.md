@@ -1,6 +1,6 @@
 # Security by Design — Sprint 7
 
-Mécanismes de sécurité réellement implémentés sur `11-finance`.
+Mécanismes de sécurité réellement implémentés (sprint 7).
 
 ## Principes
 
@@ -58,3 +58,8 @@ Modèle `JournalAdministration` :
 Consultation : `/administration/journal/` (+ Django Admin lecture seule).
 
 Pas de SIEM / pas d'observabilité avancée.
+
+---
+
+> **Suite** : l'audit de sécurité du sprint 11 et les défauts corrigés depuis
+> sont décrits dans [securite.md](securite.md).

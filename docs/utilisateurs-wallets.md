@@ -53,3 +53,12 @@ Aucune opération financière n'est disponible au Sprint 1.
 
 Un utilisateur non administrateur ne consulte que **son** profil et **son** Wallet.
 Les administrateurs (`is_staff`) conservent une vision globale.
+
+## Espace client et alimentation (sprint 11)
+
+- Inscription : `/comptes/inscription/` (ou `POST /api/auth/inscription/`) —
+  crée l'utilisateur, son profil métier et son portefeuille à 0 EUR.
+- Connexion / déconnexion : `/comptes/connexion/`, `/comptes/deconnexion/` (POST).
+  Le site `/admin/` reste réservé au personnel.
+- Espace client : `/mon-espace/` — solde, actions rapides, dernières opérations.
+- Le portefeuille s'approvisionne par carte : voir [alimentation.md](alimentation.md).

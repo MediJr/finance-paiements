@@ -17,7 +17,7 @@ Unique point de génération des fichiers. Les vues délèguent uniquement.
 ```json
 {
   "export": {
-    "application": "11-finance",
+    "application": "finance-paiements",
     "version": "finance-export-v1",
     "type": "virements",
     "format": "json",
@@ -92,3 +92,10 @@ curl -b cookies.txt "http://127.0.0.1:8001/api/administration/exports/?type=vire
 ```
 
 Les exports sont journalisés dans l'observabilité (`admin_export`).
+
+## Protection contre l'injection de formules (sprint 11)
+
+Toute cellule CSV commençant par `=`, `+`, `-`, `@`, une tabulation ou un retour
+chariot (et qui n'est pas un nombre) est préfixée d'une apostrophe : un motif
+saisi par un client comme `=HYPERLINK(...)` ne s'exécute pas à l'ouverture de
+l'export dans un tableur.
